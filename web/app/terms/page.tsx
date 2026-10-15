@@ -5,7 +5,7 @@ export const metadata = { title: 'Ketentuan Layanan — Spinora' };
 
 export default function Terms() {
   return <main className="legal-page">
-    <nav className="public-nav"><Link href="/"><Logo/></Link><Link href="/">Kembali ke beranda</Link></nav>
+    <nav className="public-nav"><Logo/><Link href="/">Kembali ke beranda</Link></nav>
     <article>
       <p className="eyebrow"><i/>TERAKHIR DIPERBARUI 16 OKTOBER 2026</p>
       <h1>Ketentuan Layanan</h1>

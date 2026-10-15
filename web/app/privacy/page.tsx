@@ -5,7 +5,7 @@ export const metadata = { title: 'Kebijakan Privasi — Spinora' };
 
 export default function Privacy() {
   return <main className="legal-page">
-    <nav className="public-nav"><Link href="/"><Logo/></Link><Link href="/">Kembali ke beranda</Link></nav>
+    <nav className="public-nav"><Logo/><Link href="/">Kembali ke beranda</Link></nav>
     <article>
       <p className="eyebrow"><i/>TERAKHIR DIPERBARUI 16 OKTOBER 2026</p>
       <h1>Kebijakan Privasi</h1>

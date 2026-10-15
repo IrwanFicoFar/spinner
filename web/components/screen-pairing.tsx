@@ -27,11 +27,15 @@ export function ScreenConnection(){
   }
   const remaining=Math.max(0,Math.ceil((expires-now)/1000));
   return <><Button variant="secondary" onClick={()=>setOpen(true)}><Monitor size={16}/>Hubungkan layar</Button><Modal open={open} onClose={()=>setOpen(false)} locked={busy} title="Sambungkan layar acara" description="Gunakan browser atau perangkat terpisah tanpa login akun admin.">
-    <ol className="pairing-steps"><li>Buka <a href="/spinner" target="_blank" rel="noreferrer">halaman spinner</a> di layar acara.</li><li>Buat kode, lalu ketik kode tersebut di layar acara.</li><li>Aktifkan LIVE dari dashboard. Layar siap diputar.</li></ol>
-    <div className="pairing-status"><i className={connected?'paired':''}/>{connected?'Akses layar aktif · berlaku 12 jam':'Belum ada akses layar aktif'}</div>
-    {code&&remaining>0?<div className="pair-code"><small>KODE SEKALI PAKAI</small><strong>{code.match(/.{1,4}/g)?.join(' – ')}</strong><span>Berlaku {Math.floor(remaining/60)}:{String(remaining%60).padStart(2,'0')}</span><Button variant="ghost" onClick={async()=>{try{await navigator.clipboard.writeText(code);setCopied(true);}catch{setError('Salin kode yang terlihat di atas secara manual.');}}}>{copied?<Check size={16}/>:<Copy size={16}/>} {copied?'Tersalin':'Salin kode'}</Button></div>:<Button disabled={busy} onClick={()=>void update('POST')}><Link2 size={17}/>{busy?'Menyiapkan…':'Buat kode layar'}</Button>}
-    <p className="field-hint">Kode berlaku 10 menit dan hanya dapat dipakai sekali. Menghubungkan layar baru akan menggantikan akses layar sebelumnya. Dashboard tetap membutuhkan login Google.</p>
-    {error&&<p className="pairing-error" role="alert">{error}</p>}
-    {(connected||code)&&<div className="pairing-revoke">{revoke?<><p>Layar akan terputus dan tidak bisa memutar lagi sampai dipasangkan ulang.</p><Button variant="secondary" disabled={busy} onClick={()=>setRevoke(false)}>Batal</Button><Button variant="danger" disabled={busy} onClick={()=>void update('DELETE')}>Putuskan sekarang</Button></>:<Button variant="ghost" onClick={()=>setRevoke(true)}><Unplug size={16}/>Cabut akses layar & kode</Button>}</div>}
+    <div className="pairing-dialog-body">
+      <ol className="pairing-steps"><li>Buka <a href="/spinner" target="_blank" rel="noreferrer">halaman spinner</a> di layar acara.</li><li>Buat kode, lalu ketik kode tersebut di layar acara.</li><li>Aktifkan LIVE dari dashboard. Layar siap diputar.</li></ol>
+      <div className="pairing-status"><i className={connected?'paired':''}/><span>{connected?'Akses layar aktif · berlaku 12 jam':'Belum ada akses layar aktif'}</span></div>
+      <div className="pairing-action">
+        {code&&remaining>0?<div className="pair-code"><small>KODE SEKALI PAKAI</small><strong>{code.match(/.{1,4}/g)?.join(' – ')}</strong><span>Berlaku {Math.floor(remaining/60)}:{String(remaining%60).padStart(2,'0')}</span><Button variant="ghost" onClick={async()=>{try{await navigator.clipboard.writeText(code);setCopied(true);}catch{setError('Salin kode yang terlihat di atas secara manual.');}}}>{copied?<Check size={16}/>:<Copy size={16}/>} {copied?'Tersalin':'Salin kode'}</Button></div>:<Button disabled={busy} onClick={()=>void update('POST')}><Link2 size={17}/>{busy?'Menyiapkan…':'Buat kode layar'}</Button>}
+        <p className="pairing-help">Kode berlaku 10 menit dan hanya dapat dipakai sekali. Menghubungkan layar baru akan menggantikan akses layar sebelumnya. Dashboard tetap membutuhkan login Google.</p>
+      </div>
+      {error&&<p className="pairing-error" role="alert">{error}</p>}
+      {(connected||code)&&<div className={`pairing-revoke ${revoke?'is-confirming':''}`}>{revoke?<><p>Layar akan terputus dan tidak bisa memutar lagi sampai dipasangkan ulang.</p><div><Button variant="secondary" disabled={busy} onClick={()=>setRevoke(false)}>Batal</Button><Button variant="danger" disabled={busy} onClick={()=>void update('DELETE')}>Putuskan sekarang</Button></div></>:<Button variant="ghost" onClick={()=>setRevoke(true)}><Unplug size={16}/>Cabut akses layar & kode</Button>}</div>}
+    </div>
   </Modal></>;
 }
