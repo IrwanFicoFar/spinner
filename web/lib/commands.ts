@@ -6,6 +6,7 @@ export const commandSchema=z.discriminatedUnion('type',[
  z.object({type:z.literal('product'),product:z.object({id:z.string().max(100),name,icon:z.string().min(1).max(20),stock:z.number().int().min(0).max(999)})}),
  z.object({type:z.literal('participant'),person:z.object({id:z.string().max(100),name,mode:z.enum(['include','exclude']),productIds:z.array(z.string().max(100)).max(1000)})}),
  z.object({type:z.literal('delete'),kind:z.enum(['product','participant']),id:z.string().max(100)}),
+ z.object({type:z.literal('clearDemo')}),
  z.object({type:z.literal('spin'),requestId:z.string().uuid(),participantId:z.string().max(100)}),
  z.object({type:z.literal('confirm'),id:z.string().uuid()}),
 ]);

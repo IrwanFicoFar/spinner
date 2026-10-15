@@ -12,7 +12,8 @@ export async function GET(){
   const database=db();
   const [existing]=await database.select().from(workspaces).where(eq(workspaces.googleSubject,user.id!));
   if(existing)return Response.json(existing.state,{headers:{'Cache-Control':'no-store'}});
-  await database.insert(workspaces).values({id:crypto.randomUUID(),googleSubject:user.id!,email:user.email!,state:initialState()}).onConflictDoNothing();
+  const demo=process.env.NODE_ENV==='development';
+  await database.insert(workspaces).values({id:crypto.randomUUID(),googleSubject:user.id!,email:user.email!,state:initialState({demo})}).onConflictDoNothing();
   const [row]=await database.select().from(workspaces).where(eq(workspaces.googleSubject,user.id!));
   return Response.json(row.state,{headers:{'Cache-Control':'no-store'}});
  }catch(error){console.error('Workspace read failed',error instanceof Error?error.name:'Error');return Response.json({error:'Database belum tersedia. Periksa konfigurasi dan migrasi.'},{status:503});}

@@ -42,4 +42,10 @@ const seedParticipants = ():Person[] => [
     } as Record<number,{mode:Person['mode'];productIds:string[]}>)[number] || { mode: 'exclude', productIds: [] };
     return { id: `u${number}`, name, ...rules };
   });
-export function initialState():State{return {name:'Workspace saya',mode:'participant',control:'admin',advance:'manual',live:false,onboarded:false,selected:'',products:seedProducts(),participants:seedParticipants(),history:[],draw:null};}
+export function initialState({demo=false}:{demo?:boolean}={}):State{return {name:'Workspace saya',mode:'participant',control:'admin',advance:'manual',live:false,onboarded:false,selected:'',products:demo?seedProducts():[],participants:demo?seedParticipants():[],history:[],draw:null};}
+
+export function isPristineDemoState(state:State):boolean {
+  return state.history.length===0 && state.draw===null &&
+    JSON.stringify(state.products)===JSON.stringify(seedProducts()) &&
+    JSON.stringify(state.participants)===JSON.stringify(seedParticipants());
+}

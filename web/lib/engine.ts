@@ -2,6 +2,7 @@ import { randomInt } from 'node:crypto';
 import type { State } from './model';
 import { eligible } from './model';
 import type { Command } from './commands';
+import { isPristineDemoState } from './seed';
 export class DrawError extends Error {}
 export function execute(s:State,c:Command,now=Date.now()):State {
  if(c.type==='spin' && s.history.some(d=>d.id===c.requestId)) return s;
@@ -22,6 +23,10 @@ export function execute(s:State,c:Command,now=Date.now()):State {
   const i=s.participants.findIndex(p=>p.id===c.person.id);if(i<0)s.participants.push(c.person);else s.participants[i]=c.person;
  }
  if(c.type==='delete') {if(c.kind==='product'){s.products=s.products.filter(p=>p.id!==c.id);s.participants.forEach(p=>p.productIds=p.productIds.filter(id=>id!==c.id));}else{s.participants=s.participants.filter(p=>p.id!==c.id);if(s.selected===c.id)s.selected='';}}
+ if(c.type==='clearDemo') {
+  if(!isPristineDemoState(s))throw new DrawError('Data sudah berubah atau memiliki riwayat sehingga tidak dapat dibersihkan sebagai demo.');
+  s.products=[];s.participants=[];s.selected='';
+ }
  if(c.type==='spin') {
   if(!s.onboarded || !s.live) throw new DrawError('Spinner sedang OFF.');
   const person=s.participants.find(p=>p.id===s.selected);
