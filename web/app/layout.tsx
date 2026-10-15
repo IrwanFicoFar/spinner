@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./public.css";
+import "./bulk.css";
 
 export const metadata: Metadata = {
   title: "Spinora — Lucky Draw Platform",

@@ -23,6 +23,16 @@ export function execute(s:State,c:Command,now=Date.now()):State {
   const i=s.participants.findIndex(p=>p.id===c.person.id);if(i<0)s.participants.push(c.person);else s.participants[i]=c.person;
  }
  if(c.type==='delete') {if(c.kind==='product'){s.products=s.products.filter(p=>p.id!==c.id);s.participants.forEach(p=>p.productIds=p.productIds.filter(id=>id!==c.id));}else{s.participants=s.participants.filter(p=>p.id!==c.id);if(s.selected===c.id)s.selected='';}}
+ if(c.type==='bulkDelete') {
+  const ids=new Set(c.ids);
+  if(c.kind==='product'){
+   s.products=s.products.filter(p=>!ids.has(p.id));
+   s.participants.forEach(p=>p.productIds=p.productIds.filter(id=>!ids.has(id)));
+  }else{
+   s.participants=s.participants.filter(p=>!ids.has(p.id));
+   if(ids.has(s.selected))s.selected='';
+  }
+ }
  if(c.type==='clearDemo') {
   if(!isPristineDemoState(s))throw new DrawError('Data sudah berubah atau memiliki riwayat sehingga tidak dapat dibersihkan sebagai demo.');
   s.products=[];s.participants=[];s.selected='';
