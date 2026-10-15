@@ -22,7 +22,7 @@ bun run db:migrate
 bun run dev
 ```
 
-Buka http://localhost:3000. Login Google membuka onboarding dan workspace berisi 100 hadiah serta 80 peserta contoh. Hapus/sesuaikan data contoh sebelum acara sebenarnya. Data prototipe lama tidak diimpor otomatis.
+Buka http://localhost:3000. Login Google membuka onboarding. Workspace baru di Production dimulai kosong. Development lokal menyediakan 100 hadiah dan 80 peserta contoh. Data prototipe lama tidak diimpor otomatis.
 
 Jalankan `bun run test`, `bun run lint`, dan `bun run build` untuk validasi. Untuk produksi gunakan `bun run build` kemudian `bun run start` pada hosting yang mendukung Next.js server; static hosting saja tidak cukup. Atur semua environment sebelum build/start.
 
@@ -50,4 +50,6 @@ Tes unit mencakup mode manual/otomatis, aturan boleh/tidak boleh, OFF, peserta y
 
 Login Google, migrasi ke Neon, isolasi dua akun nyata, dan transaksi dua browser belum dapat diverifikasi tanpa kredensial layanan. Uji keempatnya sebelum acara produksi. Autentikasi memakai Auth.js v5 beta; lockfile mengunci versi instalasi.
 
-Implementasi ini memindahkan alur utama ke backend nyata. Detail visual prototipe seperti pilihan dua tema, suara tepuk tangan/terompet, animasi acak peserta, dan pilihan ukuran seed belum seluruhnya dipindahkan. Prototipe root tetap tersedia sebagai referensi.
+Dashboard menggunakan komponen Radix untuk dropdown, dialog, sheet, dan checkbox. Hadiah serta peserta mendukung pencarian, pagination, edit melalui form, dan penghapusan massal dengan konfirmasi. Pemilihan peserta secara acak dilengkapi animasi.
+
+Suara putaran, acak nama, fanfare, dan tepuk tangan disintesis melalui Web Audio. Browser memerlukan interaksi pengguna untuk membuka audio; tombol suara dapat mematikan semua efek. Konfeti muncul di depan modal selama enam detik. Preferensi reduced motion menonaktifkan konfeti dan animasi dekoratif. Pemilihan dua tema dan preset ukuran seed prototipe belum dipindahkan. Prototipe root tetap tersedia sebagai referensi.
