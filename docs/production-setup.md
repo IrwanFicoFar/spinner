@@ -28,7 +28,7 @@ Jalankan `bun run test`, `bun run lint`, dan `bun run build` untuk validasi. Unt
 
 ## 3. Alur penggunaan
 
-- Login dengan akun Google yang sama di browser admin dan browser spinner untuk mengakses workspace yang sama.
+- Login Google hanya di dashboard admin. Klik **Hubungkan layar → Buat kode layar**, buka `/spinner` pada browser/perangkat acara, lalu masukkan kode. Layar spinner tidak membutuhkan login Google dan tidak memiliki akses pengaturan admin.
 - Akun Google berbeda memperoleh workspace terpisah. Versi ini belum mendukung beberapa akun staf dalam satu company, undangan, atau role anggota.
 - Pilih tipe hadiah saja atau hadiah + peserta pada onboarding. Penggantian tipe menampilkan konfirmasi.
 - Admin mengatur LIVE/OFF, hadiah, peserta, aturan hadiah, lokasi pemilihan peserta, dan manual/otomatis. Admin hanya menampilkan mirror roda.
@@ -52,4 +52,16 @@ Login Google, migrasi ke Neon, isolasi dua akun nyata, dan transaksi dua browser
 
 Dashboard menggunakan komponen Radix untuk dropdown, dialog, sheet, dan checkbox. Hadiah serta peserta mendukung pencarian, pagination, edit melalui form, dan penghapusan massal dengan konfirmasi. Pemilihan peserta secara acak dilengkapi animasi.
 
-Suara putaran, acak nama, fanfare, dan tepuk tangan disintesis melalui Web Audio. Browser memerlukan interaksi pengguna untuk membuka audio; tombol suara dapat mematikan semua efek. Konfeti muncul di depan modal selama enam detik. Preferensi reduced motion menonaktifkan konfeti dan animasi dekoratif. Pemilihan dua tema dan preset ukuran seed prototipe belum dipindahkan. Prototipe root tetap tersedia sebagai referensi.
+Suara putaran memakai ketukan mekanis dan drum roll, diikuti fanfare sintetis dan rekaman tepuk tangan kerumunan CC0 yang di-host lokal (lihat `web/public/audio/ATTRIBUTION.md`). Browser memerlukan interaksi pengguna untuk membuka audio; tombol suara mematikan semua efek. Konfeti bertahap muncul di depan modal selama delapan detik. Preferensi reduced motion menonaktifkan konfeti dan animasi dekoratif. Pemilihan dua tema dan preset ukuran seed prototipe belum dipindahkan. Prototipe root tetap tersedia sebagai referensi.
+
+## Akses layar spinner
+
+- Kode pairing acak 12 karakter (60 bit), kedaluwarsa setelah 10 menit, hanya dapat ditukar sekali. Database menyimpan hash, bukan kode asli.
+- Penukaran kode memberikan cookie HttpOnly, SameSite Strict, Secure pada production, khusus path `/api/screen`, berlaku 12 jam. Token acak 256 bit disimpan sebagai hash di workspace. Data pairing disimpan di JSONB yang sudah ada: tidak membutuhkan migrasi tabel atau environment baru.
+- Satu akses layar aktif per workspace. Pairing layar baru mengganti token lama. **Cabut akses layar & kode** langsung membatalkan sesi dan kode yang belum digunakan; layar akan kembali ke formulir pairing saat polling berikutnya.
+- API layar hanya mengizinkan spin/konfirmasi serta pemilihan peserta jika admin mengizinkan pemilihan dari layar. LIVE/OFF, edit, hapus dan pengaturan tetap memerlukan login admin. API admin menolak spin dan konfirmasi.
+- Payload layar tidak berisi aturan hadiah atau kredensial pairing. Pada kontrol khusus admin, daftar peserta, riwayat, dan nama di hasil juga tidak dikirim. Server menentukan kelayakan; semua hadiah dengan stok tetap tampil di roda.
+- Jika perangkat layar pernah dipakai login Google sebagai admin, keluar dari akun itu terlebih dahulu atau gunakan profil browser terpisah. Pairing tidak mencabut sesi Google yang sebelumnya sudah login di perangkat tersebut.
+- Roda memakai lingkaran terbesar yang muat di viewport. Tombol layar penuh meminta fullscreen browser jika didukung; kontrol berada di tepi. Di editor peserta, aturan hadiah tersembunyi sampai opsi **Atur hadiah untuk peserta ini** dicentang. Menonaktifkannya lalu menyimpan mengembalikan peserta ke semua hadiah.
+- Kurva putaran memakai percepatan, kecepatan puncak, lalu perlambatan gesekan hingga berhenti tanpa memantul. Posisi roda dan ketukan audio memakai fungsi waktu yang sama pada layar dan mirror. Panah berporos merespons batas segmen dengan pegas teredam, lalu diam saat selesai. Palet roda memakai warna tegas dengan pilihan teks terang/gelap; tes memastikan kontras setiap kombinasi teks roda minimal 4.5:1.
+- Tes otomatis memeriksa token salah/kedaluwarsa/dicabut, isolasi workspace, penyaringan data layar, pembatasan perintah, serta mode manual. Uji pairing admin + layar pada deployment dengan Neon asli sebelum acara; pengujian browser lokal menggunakan data simulasi.
